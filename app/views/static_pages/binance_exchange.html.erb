@@ -1,0 +1,91 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>COIN</th>
+        <th>NAME</th>
+        <th>AMOUNT</th>
+        <th>PRICE</th>
+        <th>USD</th>
+        <th>PROFIT 1D</th>
+        <th>OPTIONS</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% total_usd = 0 %>
+      <% @spot_wallet.each do |spot_wallet| %>
+        <% if spot_wallet["free"] != "0" %>
+          <tr>
+            <td><%= spot_wallet['coin'] %></td>
+            <td><%= spot_wallet['name'] %></td>
+            <td><%= spot_wallet['free'].to_d < 0.1 ? sprintf("%.4f", spot_wallet['free']) : sprintf("%.2f", spot_wallet['free']) %> <%= spot_wallet['coin'] %></td>
+            <% price = Coin.ticker_price(spot_wallet['coin']) %>
+            <td><%= sprintf("%.2f", price) %> <%= spot_wallet['coin'] %></td>
+            <% usd_amount = price.to_d * spot_wallet['free'].to_d %>
+            <% total_usd = total_usd + usd_amount %>
+            <td>USD <%= usd_amount < 0.1 ? sprintf("%.4f", usd_amount) : sprintf("%.2f", usd_amount) %>
+            <% amount_1D = Rails.cache.fetch("Binance_Exchange_#{spot_wallet['coin']}_usd_amount_#{usd_amount}", expires_in: 1.days) { usd_amount } %>
+            <td>USD <%= sprintf("%.2f", usd_amount - amount_1D) %></td>
+            <td>
+              <%= link_to 'Option 1', "#", class: "btn btn-warning"  %>
+              <%= link_to 'Option 2', "#", method: :post, data: { confirm: 'Estás seguro?' }, class: "btn btn-danger" %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>COIN</th>
+        <th>NAME</th>
+        <th>TOTAL</th>
+        <th>PROFIT 1D</th>
+        <th>BTC VALUE</th>
+        <th>BTC PROFIT 1D</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>USDT</td>
+        <td>TetherUS</td>
+        <td>USD <%= sprintf("%.2f", total_usd) %></td>
+        <% price = Coin.ticker_price('BTC') %>
+        <% amount_1D = Rails.cache.fetch("Binance_Exchange_TetherUS_usd_amount_#{total_usd}", expires_in: 1.days) { total_usd } %>
+        <td>USD <%= sprintf("%.2f", total_usd - amount_1D) %></td>
+        <td> <%= sprintf("%.6f", total_usd/price.to_d) %> BTC</td>
+        <% btc_amount_1D = Rails.cache.fetch("Binance_Exchange_TetherUS_usd_amount_#{total_usd}", expires_in: 1.days) { total_usd } %>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>LOCATION</th>
+        <th>DATE</th>
+        <th>TOTAL</th>
+        <th>VARIATION</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% Balance.all.each do |balance| %>
+        <tr>
+          <td><%= balance.location %></td>
+          <td><%= balance.date %></td>
+          <td>USD <%= sprintf("%.2f", balance.amount) %></td>
+          <td> <%= sprintf("%.2f", balance.variation.to_d) %> %</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

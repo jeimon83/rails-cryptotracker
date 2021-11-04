@@ -1,0 +1,34 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>COIN</th>
+        <th>NAME</th>
+        <th>AMOUNT</th>
+        <th>PRICE</th>
+        <th>USD</th>
+        <th>PROFIT 1D</th>
+        <th>OPTIONS</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>BNB</td>
+        <td>BINANCE COIN</td>
+        <% bsc_balance = (@bsc_balance['result'].to_d/1000000000000000000) %>
+        <td><%= bsc_balance %> BNB</td>
+        <% price = Coin.ticker_price('BNB') %>
+        <td><%= sprintf("%.2f", price) %> BNB</td>
+        <% usd_amount = price.to_d * bsc_balance.to_d %>
+        <td>USD <%= usd_amount < 0.1 ? sprintf("%.4f", usd_amount) : sprintf("%.2f", usd_amount) %>
+        <% amount_1D = Rails.cache.fetch("Metamask_BNB_usd_amount_#{usd_amount}", expires_in: 1.days) { usd_amount } %>
+        <td>USD <%= sprintf("%.2f", usd_amount - amount_1D) %></td>
+        <td>
+        <%= link_to 'Option 1', "#", class: "btn btn-warning"  %>
+        <%= link_to 'Option 2', "#", method: :post, data: { confirm: 'Estás seguro?' }, class: "btn btn-danger" %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

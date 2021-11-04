@@ -1,0 +1,24 @@
+# == Schema Information
+#
+# Table name: balances
+#
+#  id         :bigint           not null, primary key
+#  amount     :decimal(, )
+#  date       :date
+#  location   :string
+#  variation  :decimal(, )
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+one:
+  location: MyString
+  date: 2021-11-01
+  amount: 9.99
+  variation: 9.99
+
+two:
+  location: MyString
+  date: 2021-11-01
+  amount: 9.99
+  variation: 9.99

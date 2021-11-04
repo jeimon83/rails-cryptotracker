@@ -1,0 +1,33 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>COIN</th>
+        <th>NAME</th>
+        <th>AMOUNT</th>
+        <th>PRICE</th>
+        <th>USD</th>
+        <th>PROFIT 1D</th>
+        <th>OPTIONS</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>ETH</td>
+        <td>ETHEREUM</td>
+        <td><%= sprintf("%.6f", @balance) %> ETH</td>
+        <% price = Coin.ticker_price('ETH') %>
+        <td>USD <%= sprintf("%.2f", price) %></td>
+        <% usd_amount = @balance*price.to_d %>
+        <td>USD <%= sprintf("%.2f", usd_amount) %></td>
+        <% amount_1D = Rails.cache.fetch("Metamask_ETH_usd_amount_#{usd_amount}", expires_in: 1.days) { usd_amount } %>
+        <td>USD <%= sprintf("%.2f", usd_amount - amount_1D) %></td>
+        <td>
+        <%= link_to 'Option 1', "#", class: "btn btn-warning"  %>
+        <%= link_to 'Option 2', "#", method: :post, data: { confirm: 'Estás seguro?' }, class: "btn btn-danger" %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
