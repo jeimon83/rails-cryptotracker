@@ -1,6 +1,8 @@
 require 'openssl'
 
 class StaticPagesController < ApplicationController
+  before_action :check_wallet?,     only: [:ethereum_network, :binance_smart_chain]
+  before_action :check_exchange?,   only: [:binance_exchange]
   def home
   end
 
@@ -16,7 +18,6 @@ class StaticPagesController < ApplicationController
           rpc_path: "/v3/#{ENV['INFURA_API_KEY']}"
         }
       )
-
       web3.eth.getBalance("#{current_user.wallet.address}")
     end
   end
@@ -46,4 +47,12 @@ class StaticPagesController < ApplicationController
   def contact; end
 
   private
+
+  def check_wallet?
+    return redirect_to edit_user_path(current_user) unless current_user.wallet
+  end
+
+  def check_exchange?
+    return redirect_to edit_user_path(current_user) unless current_user.exchange
+  end
 end

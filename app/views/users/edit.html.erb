@@ -1,0 +1,5 @@
+  <% if flash[:notice] %>
+    <div class="notice" style='color: white; background-color: blue; text-align: center; font-size: 20px;'><%= flash[:notice] %></div>
+  <% end %>
+<h1>User#edit</h1>
+<%= render 'form_edit', user: current_user %>
