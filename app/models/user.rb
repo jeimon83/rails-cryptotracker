@@ -24,4 +24,5 @@ class User < ApplicationRecord
 
   has_one :wallet
   has_one :exchange
+  has_many :balances
 end

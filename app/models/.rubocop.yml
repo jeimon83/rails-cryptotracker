@@ -1,0 +1,10 @@
+Metrics/LineLength:
+  Max: 150
+Metrics/MethodLength:
+  Max: 25
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Max: 15
