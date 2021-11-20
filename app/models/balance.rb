@@ -24,9 +24,9 @@ class Balance < ApplicationRecord
 
   EXCHANGE_NAME = 'Binance Exchange'.freeze
 
-  def self.daily_final_balance
+  def self.daily_final_balance(force = nil)
     User.all.each do |user|
-      return true if user.balances.last&.date == Time.now.to_date
+      return if user.balances.last&.date == Time.now.to_date && force.nil?
 
       total = 0
       query_string  = "recvWindow=20000&timestamp=#{DateTime.now.strftime('%Q')}"
